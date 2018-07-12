@@ -1,0 +1,12 @@
+task ("dist") {
+    doLast {
+        ant.delete(file: "${buildDir}/script.smotreshka.zip")
+        ant.delete(dir: "${buildDir}/script.smotreshka")
+        ant.mkdir(dir: "${buildDir}/script.smotreshka");
+        ant.copy(toDir: "${buildDir}/script.smotreshka") {
+            fileset(dir: '.', includes: "*.py,icon.png,changelog.txt,addon.xml,,resources/**")
+        }
+        ant.zip(destfile: "${buildDir}/script.smotreshka.zip", basedir: "$buildDir")
+        ant.delete(dir: "${buildDir}/script.smotreshka")
+    }
+}
