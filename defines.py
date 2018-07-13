@@ -14,13 +14,8 @@ ENGINE_NOXBIT = 0
 ENGINE_AS = 1
 ENGINE_PROXY = 2
 VERSION = '1.5.3'
-skin = ADDON.getSetting('skin')
-SKIN_PATH = ADDON_PATH
-smApi = None
-print skin
-if (skin != None) and (skin != "") and (skin != 'st.anger'):
-    SKIN_PATH = DATA_PATH
 
+SKIN_PATH = ADDON_PATH
 
 class MyThread(threading.Thread):
     def __init__(self, func, params, back = True):

@@ -2,7 +2,6 @@
 	<category label="Основные">
 		<setting default="" id="login" label="Логин" type="text" />
 		<setting default="" id="password" label="Пароль" option="hidden" type="text" />
-		<setting id="skin" label="Обложка" type="labelenum" values="st.anger" />
 	</category>
 
 </settings>

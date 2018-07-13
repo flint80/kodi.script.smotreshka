@@ -68,9 +68,9 @@
                         <pulseonselect>false</pulseonselect>
                         <align>center</align>
                         <aligny>center</aligny>
-                        <label>Каналы</label>
+                        <label>Избранные</label>
                         <onright>103</onright>
-                        <onleft>104</onleft>
+                        <onleft>107</onleft>
                         <ondown>50</ondown>
                         <onfocus>SendClick(12345,102)</onfocus>
                     </control>
@@ -87,7 +87,7 @@
                         <!--<texturenofocus>tabnofocus.png</texturenofocus>-->
                         <align>center</align>
                         <aligny>center</aligny>
-                        <label>Трансляции</label>
+                        <label>Все каналы</label>
                         <onright>104</onright>
                         <onleft>102</onleft>
                         <ondown>50</ondown>
@@ -106,12 +106,70 @@
                         <!--<texturenofocus>tabnofocus.png</texturenofocus>-->
                         <align>center</align>
                         <aligny>center</aligny>
-                        <label>Архив</label>
-                        <onright>102</onright>
+                        <label>Спорт</label>
+                        <onright>105</onright>
                         <onleft>103</onleft>
                         <ondown>50</ondown>
                         <onfocus>SendClick(12345,104)</onfocus>
                     </control>
+                    <control type="button" id="105">
+                        <description>from</description>
+                        <posx>450</posx>
+                        <posy>10</posy>
+                        <width>130</width>
+                        <height>20</height>
+                        <font>font10</font>
+                        <size>10</size>
+                        <textcolor>FF99D8FF</textcolor>
+                        <texturefocus>tabfocus.png</texturefocus>
+                        <!--<texturenofocus>tabnofocus.png</texturenofocus>-->
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>Кино</label>
+                        <onright>106</onright>
+                        <onleft>104</onleft>
+                        <ondown>50</ondown>
+                        <onfocus>SendClick(12345,105)</onfocus>
+                    </control>
+                    <control type="button" id="106">
+                        <description>from</description>
+                        <posx>595</posx>
+                        <posy>10</posy>
+                        <width>130</width>
+                        <height>20</height>
+                        <font>font10</font>
+                        <size>10</size>
+                        <textcolor>FF99D8FF</textcolor>
+                        <texturefocus>tabfocus.png</texturefocus>
+                        <!--<texturenofocus>tabnofocus.png</texturenofocus>-->
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>Новости</label>
+                        <onright>107</onright>
+                        <onleft>105</onleft>
+                        <ondown>50</ondown>
+                        <onfocus>SendClick(12345,106)</onfocus>
+                    </control>
+                    <control type="button" id="107">
+                        <description>from</description>
+                        <posx>740</posx>
+                        <posy>10</posy>
+                        <width>130</width>
+                        <height>20</height>
+                        <font>font10</font>
+                        <size>10</size>
+                        <textcolor>FF99D8FF</textcolor>
+                        <texturefocus>tabfocus.png</texturefocus>
+                        <!--<texturenofocus>tabnofocus.png</texturenofocus>-->
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>Эфир</label>
+                        <onright>102</onright>
+                        <onleft>106</onleft>
+                        <ondown>50</ondown>
+                        <onfocus>SendClick(12345,107)</onfocus>
+                    </control>
+
                 </control>
 
                 <control type="group">
@@ -393,7 +451,7 @@
                     <height>7</height>
                     <info>ListItem.Progress</info>
                 </control>
-                <control type="label" id="107">
+                <control type="label" id="1107">
                     <description>My First label</description>
                     <posx>1240</posx>
                     <posy>540</posy>
@@ -406,7 +464,7 @@
                     <textcolor>FFFFFFFF</textcolor>
                     <shadowcolor>ff000000</shadowcolor>
                 </control>
-                <control type="image" id="108">
+                <control type="image" id="1108">
                     <description>Busy animation</description>
                     <posx>1250</posx>
                     <posy>540</posy>
@@ -417,15 +475,6 @@
                     <animation effect="rotate" start="0" end="360" center="auto" time="1200" loop="true"
                                condition="true">conditional
                     </animation>
-                </control>
-                <control type="image" id="1111">
-                    <posx>1145</posx>
-                    <posy>590</posy>
-                    <width>120</width>
-                    <height>110</height>
-                    <visible>true</visible>
-                    <texture>unkchannel.jpg</texture>
-                    <aspectratio>keep</aspectratio>
                 </control>
             </control>
         </control>

@@ -29,9 +29,6 @@ class WMainForm(xbmcgui.WindowXML):
     CONTEXT_MENU_IDS = (117, 101)
     ARROW_ACTIONS = (1,2,3,4)
     ACTION_MOUSE = 107
-    BTN_CHANNELS_ID = 102
-    BTN_TRANSLATIONS_ID = 103
-    BTN_ARCHIVE_ID = 104
     BTN_VOD_ID = 113
     BTN_CLOSE = 101
     BTN_FULLSCREEN = 208
@@ -41,19 +38,16 @@ class WMainForm(xbmcgui.WindowXML):
     PROGRESS_BAR = 110
     BTN_INFO = 209
     LBL_FIRST_EPG = 300
+    BTN_NEWS_CATEGORY_ID = 106
+    BTN_MOVIES_CATEGORY_ID = 105
+    BTN_SPORT_CATEGORY_ID = 104
+    BTN_AIR_CATEGORY_ID = 107
+    BTN_FAVORITES_CATEGORY_ID = 102
+    BTN_ALL_CHANNELS_CATEGORY_ID = 103
 
-    CHN_TYPE_FAVOURITE = 'Избранное'
-    CHN_TYPE_TRANSLATION = 'Трансляции'
-    CHN_TYPE_MODERATION = 'На модерации'
-    API_ERROR_INCORRECT = 'incorrect'
-    API_ERROR_NOCONNECT = 'noconnect'
-    API_ERROR_ALREADY = 'already'
-    API_ERROR_NOPARAM = 'noparam'
-    API_ERROR_NOFAVOURITE = 'nofavourite'
 
     def __init__(self, *args, **kwargs):
         self.isCanceled = False
-        self.translation = []
         self.category = {}
         self.seltab = 0
         self.epg = {}
@@ -65,7 +59,7 @@ class WMainForm(xbmcgui.WindowXML):
         self.player = MyPlayer("player.xml", defines.SKIN_PATH, defines.ADDON.getSetting('skin'))
         self.player.parent = self
         self.amalkerWnd = AdsForm("adsdialog.xml", defines.SKIN_PATH, defines.ADDON.getSetting('skin'))
-        self.cur_category = WMainForm.CHN_TYPE_FAVOURITE
+        self.cur_category = smotreshka.Smotreshka.FAVORITES_CATEGORY_ID
         self.epg = {}
         self.selitem_id = -1
         self.playditem = -1
@@ -74,50 +68,37 @@ class WMainForm(xbmcgui.WindowXML):
         password = defines.getSetting("password","", False)
         self.smApi = smotreshka.Smotreshka(login, password, defines.DATA_PATH)
         self.infoform=None
+        self.category = None
+        self.cur_category=smotreshka.Smotreshka.FAVORITES_CATEGORY_ID
 
     def initLists(self):
-        self.category = {}
-        self.category[WMainForm.CHN_TYPE_MODERATION] = { "name" : WMainForm.CHN_TYPE_MODERATION, "channels": []}
-        self.category[WMainForm.CHN_TYPE_FAVOURITE] = { "name" : WMainForm.CHN_TYPE_FAVOURITE, "channels": []}
-        self.translation = []
+        self.category={}
 
     def getChannels(self,param):
         channelsMap = self.smApi.get_channels()
         for cat in channelsMap:
-            category_str = "%s" % cat
-            if not self.category.has_key(category_str):
-                categoryName = "Все каналы"
-                if cat == smotreshka.Smotreshka.AIR_CATEGORY_ID:
-                    categoryName = "Эфирные"
-                elif cat == smotreshka.Smotreshka.SPORT_CATEGORY_ID:
-                    categoryName = "Спорт"
-                elif cat == smotreshka.Smotreshka.MOVIES_CATEGORY_ID:
-                    categoryName = "Кино"
-                elif cat == smotreshka.Smotreshka.NEWS_CATEGORY_ID:
-                    categoryName = "Новости"
-                elif cat == smotreshka.Smotreshka.FAVORITES_CATEGORY_ID:
-                    categoryName = "Избранные"
-
-                self.category[category_str] = { "name": categoryName, "channels": [] }
+            if not self.category.has_key(cat):
+                self.category[cat] = []
                 for ch in channelsMap[cat]:
                     li = xbmcgui.ListItem(ch.title, ch.uid, '', '')
                     li.setProperty("type", "channel")
                     li.setProperty("channel_uid", ch.uid)
                     li.setProperty("icon", ch.thumbnail)
-                    self.category[category_str]["channels"].append(li)
+                    self.category[cat].append(li)
 
 
     def getEpg(self, param):
-        print "epg_param = " + param
-        epg = self.smApi.get_epg(param)
-        self.epg[param] = epg
-        self.showSimpleEpg(param)
+        print "epg_param = " + param["uid"]
+        epg = self.smApi.get_epg(param["uid"])
+
+        self.epg[param["uid"]] = epg
+        self.showSimpleEpg(param["uid"],param["icon"])
         self.hideStatus()
 
     def onInit(self):
         try:
-            self.img_progress = self.getControl(108)
-            self.txt_progress = self.getControl(107)
+            self.img_progress = self.getControl(1108)
+            self.txt_progress = self.getControl(1107)
             self.progress = self.getControl(WMainForm.PROGRESS_BAR)
             self.updateList()
 
@@ -136,24 +117,20 @@ class WMainForm(xbmcgui.WindowXML):
                 self.selitem_id = self.list.getSelectedPosition()
                 LogToXBMC('Selected %s' % self.selitem_id)
                 channelUid = selItem.getProperty("channel_uid")
-                print "channel uid is %s" % channelUid
+                icon = selItem.getProperty("icon")
                 #LogToXBMC('Icon list item = %s' % selItem.getIconImage())
-                img = self.getControl(WMainForm.IMG_SCREEN)
-                img.setImage("")
+
 
                 if channelUid == '0':
                     self.showSimpleEpg()
                 elif self.epg.has_key(channelUid):
-                    self.showSimpleEpg(channelUid)
+                    self.showSimpleEpg(channelUid, icon)
                 else:
                     self.showStatus('Загрузка программы')
-                    thr = defines.MyThread(self.getEpg, channelUid)
+                    thr = defines.MyThread(self.getEpg, {"uid": channelUid, "icon": icon})
                     thr.start()
 
 
-
-                img = self.getControl(1111)
-                #img.setImage(selItem.getProperty('icon'))
 
     def checkButton(self, controlId):
         control = self.getControl(controlId)
@@ -167,38 +144,47 @@ class WMainForm(xbmcgui.WindowXML):
             #self.setFocusId(WMainForm.CONTROL_LIST)
             self.list.selectItem(self.selitem_id)
 
-    def onClickChannels(self):
-        LogToXBMC('onClickChannels')
-        self.fillChannels()
-        if self.seltab != WMainForm.BTN_CHANNELS_ID:
-            self.checkButton(WMainForm.BTN_CHANNELS_ID)
-
+    def onClickCategory(self, controlId, categoryId):
+        LogToXBMC("onClick button = %s category = %s" %(controlId, categoryId))
+        print "filling channels"
+        self.showStatus("Заполнение списка")
+        if not self.list:
+            print "self list is null"
+            self.showStatus("Список не инициализирован")
+            return
+        self.list.reset()
+        self.cur_category = categoryId
+        print "current_category %s" % categoryId
+        for ch in self.category[categoryId]:
+            self.list.addItem(ch)
+        self.hideStatus()
+        if self.seltab != controlId:
+            self.checkButton(controlId)
+        if self.playditem > -1:
+            self.setFocus(self.list)
+            self.list.selectItem(self.playditem)
+            self.playditem = -1
 
     def onClick(self, controlID):
         control = self.getControl(controlID)
         LogToXBMC('onClick %s' % controlID)
-        if controlID == WMainForm.BTN_CHANNELS_ID:
-            self.onClickChannels()
-            LogToXBMC("playditem = %s" % self.playditem)
-            if self.playditem > -1:
-                self.setFocus(self.list)
-                self.list.selectItem(self.playditem)
-                self.playditem = -1
-
+        if controlID == WMainForm.BTN_FAVORITES_CATEGORY_ID:
+            self.onClickCategory(controlID, smotreshka.Smotreshka.FAVORITES_CATEGORY_ID)
+        elif controlID == WMainForm.BTN_ALL_CHANNELS_CATEGORY_ID:
+            self.onClickCategory(controlID, smotreshka.Smotreshka.ALL_CHANNELS_CATEGORY_ID)
+        elif controlID == WMainForm.BTN_AIR_CATEGORY_ID:
+            self.onClickCategory(controlID, smotreshka.Smotreshka.AIR_CATEGORY_ID)
+        elif controlID == WMainForm.BTN_MOVIES_CATEGORY_ID:
+            self.onClickCategory(controlID, smotreshka.Smotreshka.MOVIES_CATEGORY_ID)
+        elif controlID == WMainForm.BTN_SPORT_CATEGORY_ID:
+            self.onClickCategory(controlID, smotreshka.Smotreshka.SPORT_CATEGORY_ID)
+        elif controlID == WMainForm.BTN_NEWS_CATEGORY_ID:
+            self.onClickCategory(controlID, smotreshka.Smotreshka.NEWS_CATEGORY_ID)
         elif controlID == 200:
             self.setFocusId(50)
         elif controlID == 50:
             selItem = control.getSelectedItem()
             if not selItem:
-                return
-            if selItem.getLabel() == '..':
-                if self.seltab == WMainForm.BTN_CHANNELS_ID:
-                    self.fillCategory()
-                return
-
-            if selItem.getProperty('type') == 'category':
-                self.cur_category = selItem.getProperty("id")
-                self.fillChannels()
                 return
 
             print "clicked %s uid = %s" %(selItem.getLabel(), selItem.getProperty("channel_uid"))
@@ -251,7 +237,7 @@ class WMainForm(xbmcgui.WindowXML):
 
 
 
-    def showSimpleEpg(self, epg_id = None):
+    def showSimpleEpg(self, epg_id = None, icon = None):
         controlEpg = self.getControl(WMainForm.LBL_FIRST_EPG)
         if epg_id and self.epg[epg_id].__len__() > 0:
             ctime = datetime.datetime.now()
@@ -262,6 +248,9 @@ class WMainForm(xbmcgui.WindowXML):
             self.progress.setPercent(percent)
             controlEpg.setLabel('%.2d:%.2d - %.2d:%.2d %s' % (bt.hour, bt.minute, et.hour, et.minute, curepg.title))
             nextepg = ''
+            img = self.getControl(WMainForm.IMG_SCREEN)
+            channel = smotreshka.Channel(uid=epg_id, title = None, thumbnail=icon)
+            img.setImage(self.smApi.getThumbnailFileName(channel))
             for i in range(1,99):
                 ce = None
                 try:
@@ -314,13 +303,13 @@ class WMainForm(xbmcgui.WindowXML):
         self.showStatus("Получение списка каналов")
         self.list = self.getControl(50)
         self.initLists()
-        thr = defines.MyThread(self.getChannels, 'channel', not (self.cur_category in (WMainForm.CHN_TYPE_TRANSLATION, WMainForm.CHN_TYPE_MODERATION, WMainForm.CHN_TYPE_FAVOURITE)))
+        thr = defines.MyThread(self.getChannels, 'channel', True)
         thr.daemon = False
         thr.start()
         LogToXBMC('Ожидание результата')
         thr.join(10)
         self.list.reset()
-        self.setFocus(self.getControl(WMainForm.BTN_CHANNELS_ID))
+        self.setFocus(self.getControl(WMainForm.BTN_FAVORITES_CATEGORY_ID))
         self.img_progress.setVisible(False)
         self.hideStatus()
         LogToXBMC(self.selitem_id)
