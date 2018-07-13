@@ -49,16 +49,16 @@ class WMainForm(xbmcgui.WindowXML):
     def __init__(self, *args, **kwargs):
         self.isCanceled = False
         self.category = {}
-        self.seltab = 0
+        self.seltab = WMainForm.BTN_FAVORITES_CATEGORY_ID
         self.epg = {}
         self.archive = []
         self.selitem = '0'
         self.img_progress = None
         self.txt_progress = None
         self.list = None
-        self.player = MyPlayer("player.xml", defines.SKIN_PATH, defines.ADDON.getSetting('skin'))
+        self.player = MyPlayer("player.xml", defines.SKIN_PATH, "st.anger")
         self.player.parent = self
-        self.amalkerWnd = AdsForm("adsdialog.xml", defines.SKIN_PATH, defines.ADDON.getSetting('skin'))
+        self.amalkerWnd = AdsForm("adsdialog.xml", defines.SKIN_PATH, "st.anger")
         self.cur_category = smotreshka.Smotreshka.FAVORITES_CATEGORY_ID
         self.epg = {}
         self.selitem_id = -1
@@ -309,7 +309,7 @@ class WMainForm(xbmcgui.WindowXML):
         LogToXBMC('Ожидание результата')
         thr.join(10)
         self.list.reset()
-        self.setFocus(self.getControl(WMainForm.BTN_FAVORITES_CATEGORY_ID))
+        self.setFocus(self.getControl(self.seltab))
         self.img_progress.setVisible(False)
         self.hideStatus()
         LogToXBMC(self.selitem_id)
