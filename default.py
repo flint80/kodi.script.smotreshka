@@ -1,16 +1,24 @@
-﻿# Copyright (c) 2013 Torrent-TV.RU
-# Writer (c) 2011, Welicobratov K.A., E-mail: 07pov23@gmail.com
+﻿# -*- coding: utf-8 -*-
 
-import defines
+import utils
+
 import smotreshka
 
 import mainform
 
 if __name__ == '__main__':
-    if not defines.ADDON.getSetting("login"):
-        defines.ADDON.setSetting("login", "tv035");
-        defines.ADDON.setSetting("password", "Snrhfyb7dnkc")
 
-    w = mainform.WMainForm("mainform.xml", defines.SKIN_PATH, "st.anger")
-    w.doModal()
-    del w
+    login = utils.getSetting("login")
+    password = utils.getSetting("password")
+    if (not login) or (not password):
+        utils.showMessage("не заданы параметры подключения к сервису")
+    else:
+        sm = smotreshka.Smotreshka(login, password, utils.DATA_PATH)
+        if not sm.check():
+            utils.showMessage("не удается подключиться к сервису, проверьте логин и пароль")
+        else:
+            utils.showMessage("запускаем приложение")
+            w = mainform.WMainForm("mainform.xml", utils.ADDON_PATH, "flinty")
+            w.smApi = sm
+            w.doModal()
+            del w

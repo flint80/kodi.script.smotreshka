@@ -1,2 +1,2 @@
 # kodi.script.smotreshka
-kodi plugin to watc smotreskhka.tv
+kodi plugin to watch smotreskhka.tv

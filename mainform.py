@@ -1,5 +1,4 @@
-﻿# Copyright (c) 2013 Torrent-TV.RU
-# Writer (c) 2013, Welicobratov K.A., E-mail: 07pov23@gmail.com
+﻿# -*- coding: utf-8 -*-
 
 import datetime
 import json
@@ -10,13 +9,11 @@ import xbmc
 import xbmcgui
 
 # import settings_manager
-import defines
 import smotreshka
-from adswnd import AdsForm
-from player import MyPlayer
+import utils
 
 
-#defines.showMessage("mainform init")
+
 
 def LogToXBMC(text, type = 1):
     ttext = ''
@@ -56,18 +53,12 @@ class WMainForm(xbmcgui.WindowXML):
         self.img_progress = None
         self.txt_progress = None
         self.list = None
-        self.player = MyPlayer("player.xml", defines.SKIN_PATH, "st.anger")
-        self.player.parent = self
-        self.amalkerWnd = AdsForm("adsdialog.xml", defines.SKIN_PATH, "st.anger")
         self.cur_category = smotreshka.Smotreshka.FAVORITES_CATEGORY_ID
         self.epg = {}
         self.selitem_id = -1
         self.playditem = -1
         self.user = None
-        login = defines.getSetting("login","", False)
-        password = defines.getSetting("password","", False)
-        self.smApi = smotreshka.Smotreshka(login, password, defines.DATA_PATH)
-        self.infoform=None
+        self.smApi = None
         self.category = None
         self.cur_category=smotreshka.Smotreshka.FAVORITES_CATEGORY_ID
 
@@ -88,7 +79,7 @@ class WMainForm(xbmcgui.WindowXML):
 
 
     def getEpg(self, param):
-        print "epg_param = " + param["uid"]
+        LogToXBMC("epg_param = " + param["uid"])
         epg = self.smApi.get_epg(param["uid"])
 
         self.epg[param["uid"]] = epg
@@ -127,7 +118,7 @@ class WMainForm(xbmcgui.WindowXML):
                     self.showSimpleEpg(channelUid, icon)
                 else:
                     self.showStatus('Загрузка программы')
-                    thr = defines.MyThread(self.getEpg, {"uid": channelUid, "icon": icon})
+                    thr = utils.MyThread(self.getEpg, {"uid": channelUid, "icon": icon})
                     thr.start()
 
 
@@ -146,15 +137,15 @@ class WMainForm(xbmcgui.WindowXML):
 
     def onClickCategory(self, controlId, categoryId):
         LogToXBMC("onClick button = %s category = %s" %(controlId, categoryId))
-        print "filling channels"
+        LogToXBMC("filling channels")
         self.showStatus("Заполнение списка")
         if not self.list:
-            print "self list is null"
+            LogToXBMC("self list is null")
             self.showStatus("Список не инициализирован")
             return
         self.list.reset()
         self.cur_category = categoryId
-        print "current_category %s" % categoryId
+        LogToXBMC("current_category %s" % categoryId)
         for ch in self.category[categoryId]:
             self.list.addItem(ch)
         self.hideStatus()
@@ -187,16 +178,13 @@ class WMainForm(xbmcgui.WindowXML):
             if not selItem:
                 return
 
-            print "clicked %s uid = %s" %(selItem.getLabel(), selItem.getProperty("channel_uid"))
-            buf = xbmcgui.ListItem(selItem.getLabel())
-            buf.setProperty("channel_uid", selItem.getProperty("channel_uid"))
-            #buf.setProperty('icon', selItem.getProperty('icon'))
-            buf.setProperty("type", selItem.getProperty("type"))
-            buf.setProperty("id", selItem.getProperty("id"))
-            if selItem.getProperty("type") == "archive":
-                return
+            LogToXBMC("clicked %s uid = %s" %(selItem.getLabel(), selItem.getProperty("channel_uid")))
+
+
             self.playditem = self.selitem_id
-            self.player.Start(buf)
+            lit= xbmcgui.ListItem(selItem.getLabel())
+            url = self.smApi.get_play_url(selItem.getProperty("channel_uid"))
+            xbmc.Player().play(url, lit)
             LogToXBMC("Stoped video");
             if xbmc.getCondVisibility("Window.IsVisible(home)"):
                 LogToXBMC("Close from HOME Window")
@@ -226,22 +214,18 @@ class WMainForm(xbmcgui.WindowXML):
 
         # xbmc.executebuiltin('SendClick(12345,%s)' % self.seltab)
         elif controlID == WMainForm.BTN_FULLSCREEN:
-            if defines.ADDON.getSetting("winmode") == "true":
-                self.player.show()
-            else:
-                xbmc.executebuiltin("Action(FullScreen)")
-
-        elif controlID == WMainForm.BTN_INFO:
-            self.showInfoWindow()
-            return
-
-
+            xbmc.executebuiltin("Action(FullScreen)")
 
     def showSimpleEpg(self, epg_id = None, icon = None):
         controlEpg = self.getControl(WMainForm.LBL_FIRST_EPG)
-        if epg_id and self.epg[epg_id].__len__() > 0:
-            ctime = datetime.datetime.now()
-            curepg = self.epg[epg_id][0]
+        epgs = []
+        ctime = datetime.datetime.now()
+        for epg in self.epg[epg_id]:
+            if epg.endDate > ctime:
+                epgs.append(epg)
+
+        if epg_id and epgs.__len__() > 0:
+            curepg = epgs[0]
             bt = curepg.startDate
             et = curepg.endDate
             percent = (ctime - bt).total_seconds()*100/((et-bt).total_seconds())
@@ -259,10 +243,10 @@ class WMainForm(xbmcgui.WindowXML):
                     break
                 if ce == None:
                     break
-                if i >= self.epg[epg_id].__len__():
+                if i >= epgs.__len__():
                     ce.setLabel('')
                 else:
-                    epg = self.epg[epg_id][i]
+                    epg = epgs[i]
                     bt = epg.startDate
                     et = epg.endDate
                     ce.setLabel('%.2d:%.2d - %.2d:%.2d %s' % (bt.hour, bt.minute, et.hour, et.minute, epg.title))
@@ -303,7 +287,7 @@ class WMainForm(xbmcgui.WindowXML):
         self.showStatus("Получение списка каналов")
         self.list = self.getControl(50)
         self.initLists()
-        thr = defines.MyThread(self.getChannels, 'channel', True)
+        thr = utils.MyThread(self.getChannels, 'channel')
         thr.daemon = False
         thr.start()
         LogToXBMC('Ожидание результата')
@@ -318,25 +302,20 @@ class WMainForm(xbmcgui.WindowXML):
     def showStatus(self, str):
         if self.img_progress: self.img_progress.setVisible(True)
         if self.txt_progress: self.txt_progress.setLabel(str)
-        if self.infoform: self.infoform.printASStatus(str)
 
-    def showInfoStatus(self, str):
-        if self.infoform: self.infoform.printASStatus(str)
 
     def hideStatus(self):
         if self.img_progress: self.img_progress.setVisible(False)
         if self.txt_progress: self.txt_progress.setLabel("")
 
     def fillChannels(self):
-        print "filling channels"
+        LogToXBMC("filling channels")
         self.showStatus("Заполнение списка")
         if not self.list:
-            print "self list is null"
             self.showStatus("Список не инициализирован")
             return
         self.list.reset()
-        print "current_category %s" % self.cur_category
-        print "channels %s" % self.category[self.cur_category]["channels"]
+        LogToXBMC("channels %s" % self.category[self.cur_category]["channels"])
         if self.category[self.cur_category]["channels"] == 0:
             self.fillCategory()
             self.hideStatus()
