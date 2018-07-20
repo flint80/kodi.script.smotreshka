@@ -38,7 +38,8 @@ class WMainForm(xbmcgui.WindowXML):
     BTN_NEWS_CATEGORY_ID = 106
     BTN_MOVIES_CATEGORY_ID = 105
     BTN_SPORT_CATEGORY_ID = 104
-    BTN_AIR_CATEGORY_ID = 107
+    BTN_SCIENCE_CATEGORY_ID = 108
+    BTN_ENTERTAINMENT_CATEGORY_ID = 109
     BTN_FAVORITES_CATEGORY_ID = 102
     BTN_ALL_CHANNELS_CATEGORY_ID = 103
 
@@ -46,21 +47,21 @@ class WMainForm(xbmcgui.WindowXML):
     def __init__(self, *args, **kwargs):
         self.isCanceled = False
         self.category = {}
-        self.seltab = WMainForm.BTN_FAVORITES_CATEGORY_ID
+        self.seltab = WMainForm.BTN_ALL_CHANNELS_CATEGORY_ID
         self.epg = {}
         self.archive = []
         self.selitem = '0'
         self.img_progress = None
         self.txt_progress = None
         self.list = None
-        self.cur_category = smotreshka.Smotreshka.FAVORITES_CATEGORY_ID
+        self.cur_category = smotreshka.Smotreshka.ALL_CHANNELS_CATEGORY_ID
         self.epg = {}
         self.selitem_id = -1
         self.playditem = -1
         self.user = None
         self.smApi = None
         self.category = None
-        self.cur_category=smotreshka.Smotreshka.FAVORITES_CATEGORY_ID
+        self.cur_category=smotreshka.Smotreshka.ALL_CHANNELS_CATEGORY_ID
 
     def initLists(self):
         self.category={}
@@ -115,7 +116,17 @@ class WMainForm(xbmcgui.WindowXML):
                 if channelUid == '0':
                     self.showSimpleEpg()
                 elif self.epg.has_key(channelUid):
-                    self.showSimpleEpg(channelUid, icon)
+                    ctime = datetime.datetime.now()
+                    actualEpgCount = 0;
+                    for epg in self.epg[channelUid]:
+                        if epg.endDate > ctime:
+                            actualEpgCount = actualEpgCount+1
+                    if actualEpgCount > 1:
+                        self.showSimpleEpg(channelUid, icon)
+                    else:
+                        self.showStatus('Загрузка программы')
+                        thr = utils.MyThread(self.getEpg, {"uid": channelUid, "icon": icon})
+                        thr.start()
                 else:
                     self.showStatus('Загрузка программы')
                     thr = utils.MyThread(self.getEpg, {"uid": channelUid, "icon": icon})
@@ -163,14 +174,16 @@ class WMainForm(xbmcgui.WindowXML):
             self.onClickCategory(controlID, smotreshka.Smotreshka.FAVORITES_CATEGORY_ID)
         elif controlID == WMainForm.BTN_ALL_CHANNELS_CATEGORY_ID:
             self.onClickCategory(controlID, smotreshka.Smotreshka.ALL_CHANNELS_CATEGORY_ID)
-        elif controlID == WMainForm.BTN_AIR_CATEGORY_ID:
-            self.onClickCategory(controlID, smotreshka.Smotreshka.AIR_CATEGORY_ID)
         elif controlID == WMainForm.BTN_MOVIES_CATEGORY_ID:
             self.onClickCategory(controlID, smotreshka.Smotreshka.MOVIES_CATEGORY_ID)
         elif controlID == WMainForm.BTN_SPORT_CATEGORY_ID:
             self.onClickCategory(controlID, smotreshka.Smotreshka.SPORT_CATEGORY_ID)
         elif controlID == WMainForm.BTN_NEWS_CATEGORY_ID:
             self.onClickCategory(controlID, smotreshka.Smotreshka.NEWS_CATEGORY_ID)
+        elif controlID == WMainForm.BTN_SCIENCE_CATEGORY_ID:
+            self.onClickCategory(controlID, smotreshka.Smotreshka.SCIENCE_CATEGORY_ID)
+        elif controlID == WMainForm.BTN_ENTERTAINMENT_CATEGORY_ID:
+            self.onClickCategory(controlID, smotreshka.Smotreshka.ENTERTAINMENT_CATEGORY_ID)
         elif controlID == 200:
             self.setFocusId(50)
         elif controlID == 50:

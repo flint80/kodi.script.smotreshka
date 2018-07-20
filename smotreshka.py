@@ -35,6 +35,9 @@ class Smotreshka:
     AIR_CATEGORY_ID = 4
     FAVORITES_CATEGORY_ID = 5
     ALL_CHANNELS_CATEGORY_ID = 6
+    ENTERTAINMENT_CATEGORY_ID = 7
+    SCIENCE_CATEGORY_ID=8
+
 
     def __init__(self, email, password, dataDir):
         self._email = email
@@ -43,8 +46,17 @@ class Smotreshka:
         self._cookies = None
         self._userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0"
         self._categoriesMap = {u'новости':Smotreshka.NEWS_CATEGORY_ID,
+                               u'Новости':Smotreshka.NEWS_CATEGORY_ID,
                                u'кино':Smotreshka.MOVIES_CATEGORY_ID,
+                               u'Кино':Smotreshka.MOVIES_CATEGORY_ID,
                                u'спорт':Smotreshka.SPORT_CATEGORY_ID,
+                               u'Развлекательные':Smotreshka.ENTERTAINMENT_CATEGORY_ID,
+                               u'Развлекательный':Smotreshka.ENTERTAINMENT_CATEGORY_ID,
+                               u'развлечения':Smotreshka.ENTERTAINMENT_CATEGORY_ID,
+                               u'познавательные':Smotreshka.SCIENCE_CATEGORY_ID,
+                               u'Познавательные':Smotreshka.SCIENCE_CATEGORY_ID,
+                               u'Познавательный':Smotreshka.SCIENCE_CATEGORY_ID,
+                               u'Спорт':Smotreshka.SPORT_CATEGORY_ID,
                                u'Эфирные':Smotreshka.AIR_CATEGORY_ID,
                                u'Эфирный':Smotreshka.AIR_CATEGORY_ID,
                                u'основные':Smotreshka.AIR_CATEGORY_ID}
@@ -278,6 +290,8 @@ class Smotreshka:
                             result = result + [Epg(epg['metaInfo']['title'], epg['metaInfo']['title'], epg_start, epg_end)]
         return result
 
+
+
     def getThumbnailFileName(self, channel):
         file_name = self._dataDir+"/thumbnails/"+channel.uid+".jpg"
         if os.path.exists(file_name):
@@ -298,12 +312,3 @@ class Smotreshka:
         except:
             return None
 
-if __name__ == '__main__':
-    smotreshka = Smotreshka("tv035", 'Snrhfyb7dnkc', "/home/avramenko/Temp/smotreshka")
-    channelsMap = smotreshka.get_channels()
-    channel = channelsMap.values()[0][0]
-    play_url = smotreshka.get_play_url(channel.uid)
-
-    epgInfo = smotreshka.get_epg(channel.uid)
-    print smotreshka.getThumbnailFileName(channel)
-    print play_url

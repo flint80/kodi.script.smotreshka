@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.smotreshka"
        name="Смотрешка"
-       version="0.0.2"
+       version="1.0.0"
        provider-name="flinty">
     <requires>
         <import addon="xbmc.python" version="2.1.0" />
@@ -12,7 +12,7 @@
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary>Смотрешка</summary>
-        <description>Смотрешка теперь доступна на медиаплатформе Kodi.</description>
+        <description>Смотрешка теперь доступна на медиаплатформе Kodi</description>
         <platform>all</platform>
     </extension>
 </addon>

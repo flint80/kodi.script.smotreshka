@@ -9,6 +9,7 @@ import os
 
 ADDON = xbmcaddon.Addon( id = 'script.smotreshka' )
 ADDON_PATH = ADDON.getAddonInfo('path')
+ADDON_ICON = ADDON.getAddonInfo('icon')
 DATA_PATH = xbmc.translatePath( os.path.join( "special://profile/addon_data", 'script.smotreshka') )
 
 

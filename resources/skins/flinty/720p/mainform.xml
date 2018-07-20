@@ -53,9 +53,29 @@
                         <visible>true</visible>
                         <label>$INFO[System.Time]</label>
                     </control>
-                    <control type="button" id="102">
+
+                    <control type="button" id="103">
                         <description>from</description>
                         <posx>15</posx>
+                        <posy>10</posy>
+                        <width>130</width>
+                        <height>20</height>
+                        <font>font10</font>
+                        <size>10</size>
+                        <textcolor>FF99D8FF</textcolor>
+                        <texturefocus>tabfocus.png</texturefocus>
+                        <!--<texturenofocus>tabnofocus.png</texturenofocus>-->
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>Все каналы</label>
+                        <onright>102</onright>
+                        <onleft>109</onleft>
+                        <ondown>50</ondown>
+                        <onfocus>SendClick(12345,103)</onfocus>
+                    </control>
+                    <control type="button" id="102">
+                        <description>from</description>
+                        <posx>165</posx>
                         <posy>10</posy>
                         <width>130</width>
                         <height>20</height>
@@ -69,29 +89,10 @@
                         <align>center</align>
                         <aligny>center</aligny>
                         <label>Избранные</label>
-                        <onright>103</onright>
-                        <onleft>107</onleft>
+                        <onright>104</onright>
+                        <onleft>103</onleft>
                         <ondown>50</ondown>
                         <onfocus>SendClick(12345,102)</onfocus>
-                    </control>
-                    <control type="button" id="103">
-                        <description>from</description>
-                        <posx>160</posx>
-                        <posy>10</posy>
-                        <width>130</width>
-                        <height>20</height>
-                        <font>font10</font>
-                        <size>10</size>
-                        <textcolor>FF99D8FF</textcolor>
-                        <texturefocus>tabfocus.png</texturefocus>
-                        <!--<texturenofocus>tabnofocus.png</texturenofocus>-->
-                        <align>center</align>
-                        <aligny>center</aligny>
-                        <label>Все каналы</label>
-                        <onright>104</onright>
-                        <onleft>102</onleft>
-                        <ondown>50</ondown>
-                        <onfocus>SendClick(12345,103)</onfocus>
                     </control>
                     <control type="button" id="104">
                         <description>from</description>
@@ -108,7 +109,7 @@
                         <aligny>center</aligny>
                         <label>Спорт</label>
                         <onright>105</onright>
-                        <onleft>103</onleft>
+                        <onleft>102</onleft>
                         <ondown>50</ondown>
                         <onfocus>SendClick(12345,104)</onfocus>
                     </control>
@@ -145,12 +146,12 @@
                         <align>center</align>
                         <aligny>center</aligny>
                         <label>Новости</label>
-                        <onright>107</onright>
+                        <onright>108</onright>
                         <onleft>105</onleft>
                         <ondown>50</ondown>
                         <onfocus>SendClick(12345,106)</onfocus>
                     </control>
-                    <control type="button" id="107">
+                    <control type="button" id="108">
                         <description>from</description>
                         <posx>740</posx>
                         <posy>10</posy>
@@ -163,11 +164,30 @@
                         <!--<texturenofocus>tabnofocus.png</texturenofocus>-->
                         <align>center</align>
                         <aligny>center</aligny>
-                        <label>Эфир</label>
-                        <onright>102</onright>
+                        <label>Наука</label>
+                        <onright>109</onright>
                         <onleft>106</onleft>
                         <ondown>50</ondown>
-                        <onfocus>SendClick(12345,107)</onfocus>
+                        <onfocus>SendClick(12345,108)</onfocus>
+                    </control>
+                    <control type="button" id="109">
+                        <description>from</description>
+                        <posx>895</posx>
+                        <posy>10</posy>
+                        <width>140</width>
+                        <height>20</height>
+                        <font>font10</font>
+                        <size>10</size>
+                        <textcolor>FF99D8FF</textcolor>
+                        <texturefocus>tabfocus.png</texturefocus>
+                        <!--<texturenofocus>tabnofocus.png</texturenofocus>-->
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>Развлечения</label>
+                        <onright>103</onright>
+                        <onleft>108</onleft>
+                        <ondown>50</ondown>
+                        <onfocus>SendClick(12345,109)</onfocus>
                     </control>
 
                 </control>
@@ -358,7 +378,7 @@
                     <posy>540</posy>
                     <width>1000</width>
                     <label>Нет программы</label>
-                    <font>font10</font>
+                    <font>font13</font>
                     <scroll>true</scroll>
                     <textcolor>FFFFFFFF</textcolor>
                     <shadowcolor>FF000000</shadowcolor>
@@ -366,85 +386,63 @@
                 <control type="label" id="301">
                     <description>Next EPG1</description>
                     <posx>220</posx>
-                    <posy>575</posy>
+                    <posy>585</posy>
                     <align>left</align>
                     <aligny>top</aligny>
                     <width>900</width>
                     <scroll>true</scroll>
                     <height>200</height>
-                    <font>font10</font>
+                    <font>font13</font>
                 </control>
                 <control type="label" id="302">
                     <description>Next EPG2</description>
                     <posx>220</posx>
-                    <posy>595</posy>
+                    <posy>605</posy>
                     <align>left</align>
                     <aligny>top</aligny>
                     <width>900</width>
                     <scroll>true</scroll>
                     <height>200</height>
-                    <font>font10</font>
+                    <font>font13</font>
                 </control>
                 <control type="label" id="303">
                     <description>Next EPG3</description>
                     <posx>220</posx>
-                    <posy>615</posy>
+                    <posy>625</posy>
                     <align>left</align>
                     <aligny>top</aligny>
                     <width>900</width>
                     <scroll>true</scroll>
                     <height>200</height>
-                    <font>font10</font>
+                    <font>font13</font>
                 </control>
                 <control type="label" id="304">
                     <description>Next EPG4</description>
                     <posx>220</posx>
-                    <posy>635</posy>
+                    <posy>645</posy>
                     <align>left</align>
                     <aligny>top</aligny>
                     <width>900</width>
                     <scroll>true</scroll>
                     <height>200</height>
-                    <font>font10</font>
+                    <font>font13</font>
                 </control>
                 <control type="label" id="305">
                     <description>Next EPG5</description>
                     <posx>220</posx>
-                    <posy>655</posy>
+                    <posy>665</posy>
                     <align>left</align>
                     <aligny>top</aligny>
                     <width>900</width>
                     <scroll>true</scroll>
                     <height>200</height>
-                    <font>font10</font>
-                </control>
-                <control type="label" id="306">
-                    <description>Next EPG6</description>
-                    <posx>220</posx>
-                    <posy>675</posy>
-                    <align>left</align>
-                    <aligny>top</aligny>
-                    <width>900</width>
-                    <scroll>true</scroll>
-                    <height>200</height>
-                    <font>font10</font>
-                </control>
-                <control type="label" id="307">
-                    <description>Next EPG3</description>
-                    <posx>220</posx>
-                    <posy>695</posy>
-                    <align>left</align>
-                    <aligny>top</aligny>
-                    <width>900</width>
-                    <scroll>true</scroll>
-                    <height>200</height>
-                    <font>font10</font>
+                    <font>font13</font>
                 </control>
 
                 <control type="progress" id="110">
                     <description>Progress EGP</description>
                     <posx>215</posx>
-                    <posy>565</posy>
+                    <posy>570</posy>
                     <visible>true</visible>
                     <colordiffuse>88FFFFFF</colordiffuse>
                     <width>900</width>

@@ -3,5 +3,8 @@
 		<setting default="" id="login" label="Логин" type="text" />
 		<setting default="" id="password" label="Пароль" option="hidden" type="text" />
 	</category>
+	<category label="Дополнительные">
+		<setting label="Сбросить кеш" type="action" action="RunScript(special://home//addons/script.smotreshka/clear_cache.py)"/>
+	</category>
 
 </settings>
