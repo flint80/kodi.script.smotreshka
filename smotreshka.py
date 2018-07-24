@@ -71,7 +71,14 @@ class Smotreshka:
 
     def check(self):
         try:
-            return self._login()
+            self._login()
+            url = 'http://fe.smotreshka.tv/v2/account'
+            req = urllib2.Request(url)
+            req.add_header('User-Agent', self._userAgent)
+            req.add_header('Cookie', self._cookies);
+            response = urllib2.urlopen(req)
+            body = response.read()
+            return True
         except:
             return False
 
